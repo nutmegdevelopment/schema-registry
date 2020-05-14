@@ -38,7 +38,7 @@ import java.util.Map;
 /**
  * Implementation of Converter that uses Avro schemas and objects.
  */
-public class AvroConverter implements Converter {
+public class AvroConverterPatched implements Converter {
 
   private SchemaRegistryClient schemaRegistry;
   private Serializer serializer;
@@ -47,11 +47,11 @@ public class AvroConverter implements Converter {
   private boolean isKey;
   private AvroData avroData;
 
-  public AvroConverter() {
+  public AvroConverterPatched() {
   }
 
   // Public only for testing
-  public AvroConverter(SchemaRegistryClient client) {
+  public AvroConverterPatched(SchemaRegistryClient client) {
     schemaRegistry = client;
   }
 

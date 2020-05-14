@@ -49,6 +49,7 @@ import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -1405,6 +1406,8 @@ public class AvroData {
             converted = value;
           } else if (value instanceof GenericFixed) {
             converted = ByteBuffer.wrap(((GenericFixed) value).bytes());
+          } else if (value instanceof String) {
+            converted = ByteBuffer.wrap(Base64.getDecoder().decode((String) value));
           } else {
             throw new DataException("Invalid class for bytes type, expecting byte[] or ByteBuffer "
                                     + "but found " + value.getClass());
