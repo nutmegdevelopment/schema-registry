@@ -183,6 +183,7 @@ public class AvroData {
         .getElementType();
   }
 
+  private static final Base64.Decoder decoder = Base64.getDecoder();
 
   // Convert values in Connect form into their logical types. These logical converters are
   // discovered by logical type names specified in the field
@@ -1407,10 +1408,17 @@ public class AvroData {
           } else if (value instanceof GenericFixed) {
             converted = ByteBuffer.wrap(((GenericFixed) value).bytes());
           } else if (value instanceof String) {
-            converted = ByteBuffer.wrap(Base64.getDecoder().decode((String) value));
+            try {
+              converted = ByteBuffer.wrap(decoder.decode((String) value));
+            } catch (IllegalArgumentException e) {
+              throw new DataException("Invalid class for bytes type, expecting byte[], ByteBuffer "
+                  + "or Base64-encoded String, but found "
+                  + "String that can't be decoded using Base64.");
+            }
           } else {
-            throw new DataException("Invalid class for bytes type, expecting byte[] or ByteBuffer "
-                                    + "but found " + value.getClass());
+            throw new DataException("Invalid class for bytes type, expecting byte[], ByteBuffer "
+                + "or Base64-encoded String, but found "
+                + value.getClass());
           }
           break;
 

@@ -1911,7 +1911,7 @@ public class AvroDataTest {
   }
 
   @Test
-  public void testConnectNullableDecimalDefault() {
+  public void testConnectBase64DefaultValue() {
 
     String nullable_decimal_schema_avro_default = "{\n" +
         "  \"type\": \"record\",\n" +
@@ -1982,6 +1982,46 @@ public class AvroDataTest {
     Schema schema2 = avroData.toConnectSchema(avroSchema2);
     assertEquals(schema1.parameters(), schema2.parameters());
   }
+
+    @Test(expected = DataException.class)
+    public void testConnectIllegalBase64DefaultValue() throws DataException {
+        String nullable_decimal_schema_connect_default = "{\n" +
+            "  \"type\": \"record\",\n" +
+            "  \"name\": \"Envelope\",\n" +
+            "  \"namespace\": \"dbz.schema.tests\",\n" +
+            "  \"fields\": [\n" +
+            "    {\n" +
+            "      \"name\": \"NULLABLE_DECIMAL\",\n" +
+            "      \"type\": [\n" +
+            "        {\n" +
+            "          \"type\": \"bytes\",\n" +
+            "          \"scale\": 4,\n" +
+            "          \"precision\": 15,\n" +
+            "          \"connect.version\": 1,\n" +
+            "          \"connect.parameters\": {\n" +
+            "            \"scale\": \"4\",\n" +
+            "            \"connect.decimal.precision\": \"15\"\n" +
+            "          },\n" +
+            "          \"connect.default\": \"notabase64string!\",\n" +
+            "          \"connect.name\": \"org.apache.kafka.connect.data.Decimal\",\n" +
+            "          \"logicalType\": \"decimal\"\n" +
+            "        },\n" +
+            "        \"null\"\n" +
+            "      ],\n" +
+            "      \"default\": \"\\u0000\"\n" +
+            "    }\n" +
+            "  ],\n" +
+            "  \"connect.name\": \"dbz.schema.tests.Envelope\"\n" +
+            "}";
+
+        org.apache.avro.Schema avroSchema1 = new org.apache.avro.Schema.Parser().parse(nullable_decimal_schema_connect_default);
+
+        AvroDataConfig avroDataConfig = new AvroDataConfig.Builder()
+            .with(AvroDataConfig.CONNECT_META_DATA_CONFIG, false)
+            .build();
+        AvroData avroData = new AvroData(avroDataConfig);
+        avroData.toConnectSchema(avroSchema1);
+    }
 
   @Test
   public void testArrayOfRecordWithNullNamespace() {
