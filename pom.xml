@@ -127,6 +127,15 @@
         </dependencies>
     </dependencyManagement>
 
+    <distributionManagement>
+        <repository>
+            <uniqueVersion>true</uniqueVersion>
+            <id>confluent</id>
+            <name>confluent</name>
+            <url>https://artifactory.dev.nutmeg.co.uk/artifactory/confluent</url>
+        </repository>
+    </distributionManagement>
+
     <build>
         <pluginManagement>
             <plugins>
