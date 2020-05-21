@@ -49,6 +49,7 @@ import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -182,6 +183,7 @@ public class AvroData {
         .getElementType();
   }
 
+  private static final Base64.Decoder decoder = Base64.getDecoder();
 
   // Convert values in Connect form into their logical types. These logical converters are
   // discovered by logical type names specified in the field
@@ -1405,9 +1407,18 @@ public class AvroData {
             converted = value;
           } else if (value instanceof GenericFixed) {
             converted = ByteBuffer.wrap(((GenericFixed) value).bytes());
+          } else if (value instanceof String) {
+            try {
+              converted = ByteBuffer.wrap(decoder.decode((String) value));
+            } catch (IllegalArgumentException e) {
+              throw new DataException("Invalid class for bytes type, expecting byte[], ByteBuffer "
+                  + "or Base64-encoded String, but found "
+                  + "String that can't be decoded using Base64.");
+            }
           } else {
-            throw new DataException("Invalid class for bytes type, expecting byte[] or ByteBuffer "
-                                    + "but found " + value.getClass());
+            throw new DataException("Invalid class for bytes type, expecting byte[], ByteBuffer "
+                + "or Base64-encoded String, but found "
+                + value.getClass());
           }
           break;
 

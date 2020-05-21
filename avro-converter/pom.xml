@@ -21,6 +21,7 @@
     <artifactId>kafka-connect-avro-converter</artifactId>
     <packaging>jar</packaging>
     <name>kafka-connect-avro-converter</name>
+    <version>5.4.1</version>
 
     <dependencies>
         <dependency>
@@ -31,6 +32,7 @@
         <dependency>
             <groupId>io.confluent</groupId>
             <artifactId>kafka-avro-serializer</artifactId>
+            <version>${project.parent.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.avro</groupId>
@@ -39,6 +41,7 @@
         <dependency>
             <groupId>io.confluent</groupId>
             <artifactId>kafka-schema-registry-client</artifactId>
+            <version>${project.parent.version}</version>
         </dependency>
         <dependency>
             <groupId>io.confluent</groupId>
